@@ -12,7 +12,6 @@ It includes dataset utilities, dual-head ResNet and EfficientNet models, trainin
   - `data_exploration`: dataset overview and sanity checks
   - `train_models`: trains ResNet-50 and EfficientNet-B0 multi-task models
   - `evaluate_models`: computes all metrics and saves figures
-  - `generate_report`: produces a concise markdown summary
 
 - Dataset and utilities:
   - `facial_expression_dataset.py` — Full Dataset class, transforms, loaders
@@ -34,8 +33,6 @@ It includes dataset utilities, dual-head ResNet and EfficientNet models, trainin
   - `qualitative_examples.py` — Grids of correct/incorrect predictions
 
 - Reporting:
-  - `report_generator.py` — Markdown content generator for the PDF report
-  - `short_report.py` — Concise, PDF-ready summary from existing outputs
   - `requirements.txt` — Dependencies
 
 ## Installation
@@ -65,15 +62,6 @@ python main.py --phase evaluate_models \
   --resnet_ckpt checkpoints_both/<timestamp>/resnet50/best.pth \
   --effnet_ckpt checkpoints_both/<timestamp>/efficientnet_b0/best.pth \
   --batch_size 64
-```
-
-- Generate short report (markdown)
-```bash
-python main.py --phase generate_report \
-  --data_root path/to/Dataset \
-  --resnet_ckpt checkpoints_both/<timestamp>/resnet50/best.pth \
-  --effnet_ckpt checkpoints_both/<timestamp>/efficientnet_b0/best.pth \
-  --report_out report_outputs
 ```
 
 ### Google Colab
