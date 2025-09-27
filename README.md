@@ -1,27 +1,42 @@
-# Facial Expression Dataset Explorer
+# Facial Expression Analysis: Multi-Task PyTorch Pipeline
 
-This repository contains Python scripts to explore and analyze facial expression datasets for deep learning projects using PyTorch.
+This repository provides a complete, end-to-end PyTorch pipeline for facial expression analysis with multi-task learning:
+- 8-class emotion classification
+- Valence/Arousal regression
 
-## Files Overview
+It includes dataset utilities, dual-head ResNet and EfficientNet models, training with AMP, comprehensive evaluation metrics, visualization, model comparison, and report generation. It can be run locally or end-to-end on Google Colab.
 
-### 1. `dataset_explorer.py` - Comprehensive Dataset Analysis
-The main script that provides detailed analysis of your facial expression dataset including:
-- Complete directory structure listing
-- NPY file content analysis
-- Sample image visualization with annotations
-- Image dimension verification (224x224 RGB)
-- Dataset statistics (emotion distribution, valence/arousal)
-- PyTorch-compatible data loading preview
+## Repository Structure (Key Files)
 
-### 2. `quick_dataset_check.py` - Quick Overview
-A simplified script for rapid dataset inspection:
-- Basic directory structure
-- File type counts
-- Sample image properties
-- PyTorch compatibility test
+- `main.py` — Single-file pipeline with CLI phases:
+  - `data_exploration`: dataset overview and sanity checks
+  - `train_models`: trains ResNet-50 and EfficientNet-B0 multi-task models
+  - `evaluate_models`: computes all metrics and saves figures
+  - `generate_report`: produces a concise markdown summary
 
-### 3. `requirements.txt` - Dependencies
-All required Python packages for running the scripts.
+- Dataset and utilities:
+  - `facial_expression_dataset.py` — Full Dataset class, transforms, loaders
+  - `dataset_explorer.py`, `quick_dataset_check.py` — Dataset exploration tools
+
+- Models:
+  - `multitask_resnet.py` — MultiTaskResNet (dual heads)
+  - `multitask_efficientnet.py` — MultiTaskEfficientNet-B0 (dual heads)
+
+- Training:
+  - `train.py` — Single-architecture training script
+  - `train_both.py` — Trains both architectures sequentially
+  - `multitask_loss.py` — Combined loss with weighting and scheduling
+
+- Evaluation and analysis:
+  - `evaluate.py` — All PDF-required metrics (classification + continuous)
+  - `results_analysis.py` — Curves, confusion matrices, VA scatter, params/timing
+  - `model_comparison.py` — Accuracy/time comparison + significance testing
+  - `qualitative_examples.py` — Grids of correct/incorrect predictions
+
+- Reporting:
+  - `report_generator.py` — Markdown content generator for the PDF report
+  - `short_report.py` — Concise, PDF-ready summary from existing outputs
+  - `requirements.txt` — Dependencies
 
 ## Installation
 
@@ -30,21 +45,41 @@ All required Python packages for running the scripts.
 pip install -r requirements.txt
 ```
 
-## Usage
+## Quick Start
 
-### Option 1: Comprehensive Analysis
-Run the full dataset explorer:
+### Run everything from the single-file pipeline
+- Data exploration
 ```bash
-python dataset_explorer.py
+python main.py --phase data_exploration --data_root path/to/Dataset
 ```
 
-When prompted, enter your dataset path or press Enter to use the current directory.
-
-### Option 2: Quick Check
-For a rapid overview:
+- Train both models (ResNet-50 and EfficientNet-B0)
 ```bash
-python quick_dataset_check.py
+python main.py --phase train_models --data_root path/to/Dataset --epochs 50 --batch_size 32 --lr 1e-3
 ```
+
+- Evaluate models (metrics + plots)
+```bash
+python main.py --phase evaluate_models \
+  --data_root path/to/Dataset \
+  --resnet_ckpt checkpoints_both/<timestamp>/resnet50/best.pth \
+  --effnet_ckpt checkpoints_both/<timestamp>/efficientnet_b0/best.pth \
+  --batch_size 64
+```
+
+- Generate short report (markdown)
+```bash
+python main.py --phase generate_report \
+  --data_root path/to/Dataset \
+  --resnet_ckpt checkpoints_both/<timestamp>/resnet50/best.pth \
+  --effnet_ckpt checkpoints_both/<timestamp>/efficientnet_b0/best.pth \
+  --report_out report_outputs
+```
+
+### Google Colab
+- Upload the project to `/content/DL_a2` and dataset to `/content/DL_a2/Dataset`.
+- Install dependencies and run the same `main.py` commands.
+- Mixed precision (AMP) and GPU are used automatically when available.
 
 ## Features
 
